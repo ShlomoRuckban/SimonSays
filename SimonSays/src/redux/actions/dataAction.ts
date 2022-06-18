@@ -1,6 +1,10 @@
+import asyncStore from '../../utility/cache';
+import {Dispatch} from 'react';
+
 export interface DataModel {
   name: string;
   scores: number;
+  place: number;
 }
 
 export interface GatherAction {
@@ -14,3 +18,28 @@ export interface ErrorAction {
 }
 
 export type DataAction = GatherAction | ErrorAction;
+
+// export const onStart = (key: string) => {
+//   return async (dispatch: Dispatch<DataAction>) => {
+//     const data = "test"
+
+//     try {
+//       if (!data) {
+//         dispatch({
+//           type: 'ON_ERROR',
+//           payload: 'Error in retrieving data.',
+//         });
+//       } else {
+//         dispatch({
+//           type: 'ON_START',
+//           payload: data,
+//         });
+//       }
+//     } catch (err) {
+//       dispatch({
+//         type: 'ON_ERROR',
+//         payload: err,
+//       });
+//     }
+//   };
+// };
