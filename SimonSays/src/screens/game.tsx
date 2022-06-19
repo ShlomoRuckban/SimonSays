@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {Props} from '../navigation';
-
 import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-export const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+import Sound from 'react-native-sound';
+
+import {Props} from '../navigation';
+import getSounds from '../utility/getSounds';
 
 const Game = ({navigation}: Props) => {
-  const [isUserTurn, setUserTurn] = useState<boolean>(false);
-  const [turnTrack, setTurntrack] = useState<number[]>([]);
+  const [soundList, SetSoundList] = useState<Sound[]>([]);
+  const [isUserTurn, setUserTurn] = useState<boolean>(true);
+  const [turnTrack, setTurntrack] = useState<number[]>([0, 2, 1, 3]);
   const [turnCounter, setTurnCounter] = useState<number>(0);
   const [stepCounter, setStepCounter] = useState<number>(0);
   const [isRedPressed, setRedPressed] = useState<boolean>(false);
@@ -15,37 +17,35 @@ const Game = ({navigation}: Props) => {
   const [isGreenPressed, setGreenPressed] = useState<boolean>(false);
   const [isGameover, setGameOver] = useState<boolean>(false);
 
-  const runTurns = () => {
+  const runTurns = async () => {
     turnTrack.forEach(turn => {
-      setTimeout(() => {
-        if (turn === 0) {
-          setRedPressed(true);
-          setTimeout(() => {
-            setRedPressed(false);
-          }, 1000);
-        }
-        if (turn === 1) {
-          setYellowPressed(true);
-          setTimeout(() => {
-            setYellowPressed(false);
-          }, 1000);
-        }
-        if (turn === 2) {
-          setBluePressed(true);
-          setTimeout(() => {
-            setBluePressed(false);
-          }, 1000);
-        }
-        if (turn === 3) {
-          setGreenPressed(true);
-          setTimeout(() => {
-            setGreenPressed(false);
-          }, 1000);
-        }
-      }, 5000);
+      if (turn === 0) {
+        setRedPressed(true);
+        setTimeout(() => {
+          setRedPressed(false);
+        }, 1000);
+      } else if (turn === 1) {
+        setYellowPressed(true);
+        setTimeout(() => {
+          setYellowPressed(false);
+        }, 1000);
+      } else if (turn === 2) {
+        setBluePressed(true);
+        setTimeout(() => {
+          setBluePressed(false);
+        }, 1000);
+      } else if (turn === 3) {
+        setGreenPressed(true);
+        setTimeout(() => {
+          setGreenPressed(false);
+        }, 1000);
+      }
     });
   };
 
+  useEffect(() => {
+    SetSoundList(getSounds());
+  }, []);
 
   useEffect(() => {
     if (isUserTurn) return;
@@ -55,10 +55,10 @@ const Game = ({navigation}: Props) => {
     runTurns();
     setUserTurn(true);
   }, [isUserTurn]);
-
-
+  
   const handleRedClick = (e: any) => {
-    if (!isUserTurn) return;
+      console.log(soundList.length)
+      if (!isUserTurn) return;
 
     setRedPressed(false);
     setYellowPressed(false);
@@ -66,28 +66,34 @@ const Game = ({navigation}: Props) => {
     setGreenPressed(false);
 
     if (e === 'red' && turnTrack[stepCounter] === 0) {
+      soundList[0].setCurrentTime(0).play();
       setRedPressed(true);
       setStepCounter(stepCounter + 1);
-      return
+      return;
     }
     if (e === 'yellow' && turnTrack[stepCounter] === 1) {
+      soundList[1].setCurrentTime(0).play();
       setYellowPressed(true);
       setStepCounter(stepCounter + 1);
-      return
+      return;
     }
     if (e === 'blue' && turnTrack[stepCounter] === 2) {
+      soundList[2].setCurrentTime(0).play();
       setBluePressed(true);
       setStepCounter(stepCounter + 1);
-      return
+      return;
     }
     if (e === 'green' && turnTrack[stepCounter] === 3) {
+      soundList[3].play(() => {
+        soundList[3].stop();
+        soundList[3].release();
+      });
       setGreenPressed(true);
       setStepCounter(stepCounter + 1);
-      return
+      return;
     }
-
-
     // setTurnCounter(turnCounter + 1);
+    SetSoundList(getSounds());
   };
 
   let currentScore = turnCounter;
@@ -158,20 +164,9 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
   },
-  red: {
-    backgroundColor: 'red',
-  },
-  yellow: {
-    backgroundColor: 'yellow',
-  },
-  blue: {
-    backgroundColor: 'blue',
-  },
-  green: {
-    backgroundColor: 'green',
-  },
   score: {
     marginBottom: 10,
+    color: 'grey',
   },
 });
 export default Game;

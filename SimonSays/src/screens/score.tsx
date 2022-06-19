@@ -54,14 +54,17 @@ const styles = StyleSheet.create({
   spot: {
     width: '12%',
     fontSize: 30,
+    color: "grey"
   },
   name: {
     width: '43%',
     fontSize: 30,
+    color: "grey"
   },
   score: {
     width: '45%',
     fontSize: 30,
+    color: "grey"
   },
 });
 export default Score;
