@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import Animated, {Value} from 'react-native-reanimated';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 
 import Sound from 'react-native-sound';
 
 import {Props} from '../navigation';
 import getSounds from '../utility/getSounds';
-import ColorComp from '../components/colorComp';
 
 const Game = ({navigation}: Props) => {
   const [isUserTurn, setUserTurn] = useState<boolean>(false);
@@ -14,6 +18,8 @@ const Game = ({navigation}: Props) => {
   const [turnTrack, setTurntrack] = useState<number[]>([]);
   const [turnCounter, setTurnCounter] = useState<number>(0);
   const [stepCounter, setStepCounter] = useState<number>(0);
+  const [name, setName] = useState<string>('');
+  const [isTurnReady, setTurnReady] = useState<boolean>(false);
 
   const [isRedPressed, setRedPressed] = useState<string>('red');
   const [isYellowPressed, setYellowPressed] = useState<string>('yellow');
@@ -22,19 +28,11 @@ const Game = ({navigation}: Props) => {
 
   const [isGameover, setGameOver] = useState<boolean>(false);
 
-  const delay = (ms: number) => {
-    const startPoint = new Date().getTime();
-    while (new Date().getTime() - startPoint <= ms) {
-      /* wait */
-    }
-  };
-
-  const runSteps = async () => {
+  const runSteps = () => {
     if (!soundList.length) return;
-    var passedTurns = 0;
+    var passedTurns = 1;
 
     turnTrack.forEach(turn => {
-      soundList[turn].setCurrentTime(0).play();
       if (turn === 0) {
         setTimeout(() => {
           setRedPressed('pink');
@@ -75,98 +73,134 @@ const Game = ({navigation}: Props) => {
           setGreenPressed('green');
         }, 1000 * passedTurns);
       }
-
     });
-    setUserTurn(true);
+    setTimeout(() => {
+      setUserTurn(true);
+    }, 1000 * passedTurns);
+  };
+
+  const addStep = () => {
+    turnTrack.push(Math.floor(Math.random() * 4));
   };
 
   useEffect(() => {
     SetSoundList(getSounds());
-    setTurntrack(turnTrack => [...turnTrack, Math.floor(Math.random() * 4)]);
+    addStep();
   }, []);
 
-  const handleRedClick = (e: string) => {
+  const handleRedClick = (e: number) => {
     if (!isUserTurn) return;
-
-    if (e === 'red') {
+    if (e === 0 && turnTrack[stepCounter] === 0) {
       soundList[0].setCurrentTime(0).play();
-      setStepCounter(stepCounter + 1);
-      return;
-    }
-    if (e === 'yellow') {
+    } else if (e === 1 && turnTrack[stepCounter] === 1) {
       soundList[1].setCurrentTime(0).play();
-      setStepCounter(stepCounter + 1);
-      return;
-    }
-    if (e === 'blue') {
+    } else if (e === 2 && turnTrack[stepCounter] === 2) {
       soundList[2].setCurrentTime(0).play();
-      setStepCounter(stepCounter + 1);
-      return;
-    }
-    if (e === 'green') {
+    } else if (e === 3 && turnTrack[stepCounter] === 3) {
       soundList[3].setCurrentTime(0).play();
-      setStepCounter(stepCounter + 1);
+    } else {
+      setTimeout(() => {
+        setGameOver(true);
+      }, 500);
+    }
+    if (stepCounter === turnTrack.length - 1) {
+      console.log('test1: ', turnTrack);
+      setStepCounter(0);
+      setTurnCounter(turnCounter + 1);
+      setUserTurn(false);
+      addStep();
+      setTimeout(() => {
+        runSteps();
+      }, 500);
       return;
     }
-
-    setTurnCounter(turnCounter + 1);
+    setStepCounter(stepCounter + 1);
   };
 
   return (
     <>
-      <View style={styles.board}>
-        <View>
-          <ColorComp
-            onPress={() => handleRedClick('red')}
-            isUserTurn={isUserTurn}
-            color={isRedPressed}
-          />
+      <>
+        {!isGameover && (
+          <>
+            <View style={styles.board}>
+              <View>
+                <TouchableOpacity
+                  activeOpacity={isUserTurn ? 0 : 1}
+                  onPress={() => handleRedClick(0)}>
+                  <View
+                    style={[
+                      styles.colorContainer,
+                      {backgroundColor: isRedPressed},
+                    ]}
+                  />
+                </TouchableOpacity>
 
-          <ColorComp
-            onPress={() => handleRedClick('yellow')}
-            isUserTurn={isUserTurn}
-            color={isYellowPressed}
-          />
-        </View>
-        <View>
-          <ColorComp
-            onPress={() => handleRedClick('blue')}
-            isUserTurn={isUserTurn}
-            color={isBluePressed}
-          />
+                <TouchableOpacity
+                  activeOpacity={isUserTurn ? 0 : 1}
+                  onPress={() => handleRedClick(1)}>
+                  <View
+                    style={[
+                      styles.colorContainer,
+                      {backgroundColor: isYellowPressed},
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  activeOpacity={isUserTurn ? 0 : 1}
+                  onPress={() => handleRedClick(2)}>
+                  <View
+                    style={[
+                      styles.colorContainer,
+                      {backgroundColor: isBluePressed},
+                    ]}
+                  />
+                </TouchableOpacity>
 
-          <ColorComp
-            onPress={() => handleRedClick('green')}
-            isUserTurn={isUserTurn}
-            color={isGreenPressed}
-          />
-        </View>
-      </View>
-      <Text style={styles.score}>Current Score: {turnCounter}</Text>
-        {/* turnTrack.length <= */}
-      { 1 && (
+                <TouchableOpacity
+                  activeOpacity={isUserTurn ? 0 : 1}
+                  onPress={() => handleRedClick(3)}>
+                  <View
+                    style={[
+                      styles.colorContainer,
+                      {backgroundColor: isGreenPressed},
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text style={styles.score}>Current Score: {turnCounter}</Text>
+          </>
+        )}
+        {isGameover && (
+          <>
+            <View>
+              <Text style={styles.gameOver}>Game Over!</Text>
+            </View>
+            <TextInput
+              placeholderTextColor="grey"
+              placeholder="Enter your name"
+              onChangeText={setName}></TextInput>
+          </>
+        )}
+        {/*   */}
+        {turnTrack.length <= 1 && (
+          <TouchableOpacity
+            onPress={() => {
+              runSteps();
+            }}>
+            <Text style={styles.button}>START</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => {
-            runSteps();
+            /* 1. Navigate to the Details route with params */
+            navigation.navigate('Score');
           }}>
-          <Text style={styles.button}>START</Text>
+          <Text style={styles.button}>Go to Scoreboard</Text>
         </TouchableOpacity>
-      )}
-      <TouchableOpacity
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate('Score', {
-            score: turnCounter,
-          });
-        }}>
-        <Text style={styles.button}>Go to Scoreboard</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          setUserTurn(!isUserTurn);
-        }}>
-        <Text style={styles.button}>Change Turn</Text>
-      </TouchableOpacity>
+      </>
     </>
   );
 };
@@ -198,6 +232,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     backgroundColor: 'lightblue',
+  },
+  gameOver: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 export default Game;

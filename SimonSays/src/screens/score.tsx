@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {Props} from '../navigation';
 
 import {StyleSheet, Text, View} from 'react-native';
 
@@ -16,7 +15,7 @@ const list = [
   {name: 'Shlomo', score: 1, place: 10},
 ];
 
-const Score = ({navigation}: Props) => {
+const Score = () => {
   let winnerList = list.map(winner => {
     return (
       <View key={winner.place} style={styles.winner}>
@@ -54,17 +53,17 @@ const styles = StyleSheet.create({
   spot: {
     width: '12%',
     fontSize: 30,
-    color: "grey"
+    color: 'grey',
   },
   name: {
     width: '43%',
     fontSize: 30,
-    color: "grey"
+    color: 'grey',
   },
   score: {
     width: '45%',
     fontSize: 30,
-    color: "grey"
+    color: 'grey',
   },
 });
 export default Score;
