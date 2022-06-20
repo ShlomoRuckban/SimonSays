@@ -19,27 +19,27 @@ export interface ErrorAction {
 
 export type DataAction = GatherAction | ErrorAction;
 
-// export const onStart = (key: string) => {
-//   return async (dispatch: Dispatch<DataAction>) => {
-//     const data = "test"
+export const onStart = (key: string) => {
+  return async (dispatch: Dispatch<DataAction>) => {
+    const data = {name: 'Shlomo', scores: 100, spot: 1};
 
-//     try {
-//       if (!data) {
-//         dispatch({
-//           type: 'ON_ERROR',
-//           payload: 'Error in retrieving data.',
-//         });
-//       } else {
-//         dispatch({
-//           type: 'ON_START',
-//           payload: data,
-//         });
-//       }
-//     } catch (err) {
-//       dispatch({
-//         type: 'ON_ERROR',
-//         payload: err,
-//       });
-//     }
-//   };
-// };
+    try {
+      if (!data) {
+        dispatch({
+          type: 'ON_ERROR',
+          payload: 'Error in retrieving data.',
+        });
+      } else {
+        dispatch({
+          type: 'ON_START',
+          payload: data,
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: 'ON_ERROR',
+        payload: err,
+      });
+    }
+  };
+};
