@@ -1,25 +1,24 @@
 import React, {useState, useEffect} from 'react';
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Animated, {Value} from 'react-native-reanimated';
 
 import Sound from 'react-native-sound';
 
 import {Props} from '../navigation';
 import getSounds from '../utility/getSounds';
+import ColorComp from '../components/colorComp';
 
 const Game = ({navigation}: Props) => {
   const [isUserTurn, setUserTurn] = useState<boolean>(false);
   const [soundList, SetSoundList] = useState<Sound[]>([]);
-  const [turnTrack, setTurntrack] = useState<number[]>([
-    0, 2, 3, 1, 2, 1, 0, 3, 1,
-  ]);
+  const [turnTrack, setTurntrack] = useState<number[]>([]);
   const [turnCounter, setTurnCounter] = useState<number>(0);
   const [stepCounter, setStepCounter] = useState<number>(0);
 
-  const [isRedPressed, setRedPressed] = useState<boolean>(false);
-  const [isYellowPressed, setYellowPressed] = useState<boolean>(false);
-  const [isBluePressed, setBluePressed] = useState<boolean>(false);
-  const [isGreenPressed, setGreenPressed] = useState<boolean>(false);
+  const [isRedPressed, setRedPressed] = useState<string>('red');
+  const [isYellowPressed, setYellowPressed] = useState<string>('yellow');
+  const [isBluePressed, setBluePressed] = useState<string>('blue');
+  const [isGreenPressed, setGreenPressed] = useState<string>('green');
 
   const [isGameover, setGameOver] = useState<boolean>(false);
 
@@ -30,52 +29,61 @@ const Game = ({navigation}: Props) => {
     }
   };
 
-  const initialTurn = async () => {
-    // setTurntrack(turnTrack => [...turnTrack, Math.floor(Math.random() * 4)]);
-
-    console.log('List length', soundList.length);
-    runSteps();
-  };
-
-  const runSteps = () => {
+  const runSteps = async () => {
     if (!soundList.length) return;
+    var passedTurns = 0;
+
     turnTrack.forEach(turn => {
+      soundList[turn].setCurrentTime(0).play();
       if (turn === 0) {
-        setRedPressed(true);
-        soundList[0].setCurrentTime(0).play();
-        delay(500);
-        setRedPressed(false);
+        setTimeout(() => {
+          setRedPressed('pink');
+          soundList[0].setCurrentTime(0).play();
+        }, 1000 * passedTurns);
+        passedTurns++;
+        setTimeout(() => {
+          setRedPressed('red');
+        }, 1000 * passedTurns);
       }
       if (turn === 1) {
-        setYellowPressed(true);
-        soundList[1].setCurrentTime(0).play();
-        delay(500);
-        setYellowPressed(false);
+        setTimeout(() => {
+          setYellowPressed('lightyellow');
+          soundList[1].setCurrentTime(0).play();
+        }, 1000 * passedTurns);
+        passedTurns++;
+        setTimeout(() => {
+          setYellowPressed('yellow');
+        }, 1000 * passedTurns);
       }
       if (turn === 2) {
-        setBluePressed(true);
-        soundList[2].setCurrentTime(0).play();
-        delay(500);
-        setBluePressed(false);
+        setTimeout(() => {
+          setBluePressed('lightblue');
+          soundList[2].setCurrentTime(0).play();
+        }, 1000 * passedTurns);
+        passedTurns++;
+        setTimeout(() => {
+          setBluePressed('blue');
+        }, 1000 * passedTurns);
       }
       if (turn === 3) {
-        setGreenPressed(true);
-        soundList[3].setCurrentTime(0).play();
-        delay(500);
-        setGreenPressed(false);
+        setTimeout(() => {
+          setGreenPressed('lightgreen');
+          soundList[3].setCurrentTime(0).play();
+        }, 1000 * passedTurns);
+        passedTurns++;
+        setTimeout(() => {
+          setGreenPressed('green');
+        }, 1000 * passedTurns);
       }
-      //   console.log(turn);
-      delay(1000);
+
     });
+    setUserTurn(true);
   };
 
   useEffect(() => {
     SetSoundList(getSounds());
+    setTurntrack(turnTrack => [...turnTrack, Math.floor(Math.random() * 4)]);
   }, []);
-
-  useEffect(() => {
-    initialTurn();
-  }, [soundList.length]);
 
   const handleRedClick = (e: string) => {
     if (!isUserTurn) return;
@@ -100,84 +108,66 @@ const Game = ({navigation}: Props) => {
       setStepCounter(stepCounter + 1);
       return;
     }
-    // setTurnCounter(turnCounter + 1);
+
+    setTurnCounter(turnCounter + 1);
   };
 
   return (
-    <View>
+    <>
       <View style={styles.board}>
         <View>
-          <TouchableOpacity
-            activeOpacity={isUserTurn ? 0 : 1}
-            onPress={() => handleRedClick('red')}>
-            <Animated.View
-              style={[
-                styles.colorContainer,
-                isRedPressed
-                  ? {backgroundColor: 'pink'}
-                  : {backgroundColor: 'red'},
-              ]}
-            />
-          </TouchableOpacity>
+          <ColorComp
+            onPress={() => handleRedClick('red')}
+            isUserTurn={isUserTurn}
+            color={isRedPressed}
+          />
 
-          <TouchableOpacity
-            activeOpacity={isUserTurn ? 0 : 1}
-            onPress={() => handleRedClick('yellow')}>
-            <Animated.View
-              style={[
-                styles.colorContainer,
-                isYellowPressed
-                  ? {backgroundColor: 'lightyellow'}
-                  : {backgroundColor: 'yellow'},
-              ]}
-            />
-          </TouchableOpacity>
+          <ColorComp
+            onPress={() => handleRedClick('yellow')}
+            isUserTurn={isUserTurn}
+            color={isYellowPressed}
+          />
         </View>
         <View>
-          <TouchableOpacity
-            activeOpacity={isUserTurn ? 0 : 1}
-            onPress={() => handleRedClick('blue')}>
-            <Animated.View
-              style={[
-                styles.colorContainer,
-                isBluePressed
-                  ? {backgroundColor: 'lightblue'}
-                  : {backgroundColor: 'blue'},
-              ]}
-            />
-          </TouchableOpacity>
+          <ColorComp
+            onPress={() => handleRedClick('blue')}
+            isUserTurn={isUserTurn}
+            color={isBluePressed}
+          />
 
-          <TouchableOpacity
-            activeOpacity={isUserTurn ? 0 : 1}
-            onPress={() => handleRedClick('green')}>
-            <Animated.View
-              style={[
-                styles.colorContainer,
-                isGreenPressed
-                  ? {backgroundColor: 'lightgreen'}
-                  : {backgroundColor: 'green'},
-              ]}
-            />
-          </TouchableOpacity>
+          <ColorComp
+            onPress={() => handleRedClick('green')}
+            isUserTurn={isUserTurn}
+            color={isGreenPressed}
+          />
         </View>
       </View>
       <Text style={styles.score}>Current Score: {turnCounter}</Text>
-      <Button
-        title="Go to ScoreBoard"
+        {/* turnTrack.length <= */}
+      { 1 && (
+        <TouchableOpacity
+          onPress={() => {
+            runSteps();
+          }}>
+          <Text style={styles.button}>START</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
         onPress={() => {
           /* 1. Navigate to the Details route with params */
           navigation.navigate('Score', {
             score: turnCounter,
           });
-        }}
-      />
-      <Button
-        title="Change Turn"
+        }}>
+        <Text style={styles.button}>Go to Scoreboard</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         onPress={() => {
           setUserTurn(!isUserTurn);
-        }}
-      />
-    </View>
+        }}>
+        <Text style={styles.button}>Change Turn</Text>
+      </TouchableOpacity>
+    </>
   );
 };
 
@@ -197,6 +187,17 @@ const styles = StyleSheet.create({
   score: {
     marginBottom: 10,
     color: 'grey',
+  },
+  button: {
+    width: '100%',
+    marginTop: 16,
+    color: 'white',
+    paddingTop: 16,
+    flexDirection: 'row',
+    paddingBottom: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: 'lightblue',
   },
 });
 export default Game;
