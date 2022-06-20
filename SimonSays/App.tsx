@@ -18,13 +18,13 @@ const Stack = createStackNavigator();
 //   (state: ApplicationState) => state.dataReducer,
 // );
 
-// console.log(data);
-
 function App() {
+
+
+
   useEffect(() => {
-    const allDataKeys =AsyncStore.getAllStorageKeys();
-    console.log(JSON.stringify(allDataKeys));
-    // const allData = AsyncStore.multiGetData(allDataKeys);
+    const allData:any = AsyncStore.multiGetData();
+    console.log(allData);
   }, []);
 
   return (
@@ -32,7 +32,11 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Game">
           <Stack.Screen name="Game" component={Game} />
-          <Stack.Screen name="Score" component={Score} />
+          <Stack.Screen
+            name="Score"
+            component={Score}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

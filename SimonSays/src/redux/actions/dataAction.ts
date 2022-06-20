@@ -4,7 +4,7 @@ import {Dispatch} from 'react';
 export interface DataModel {
   name: string;
   scores: number;
-  place: number;
+  spot: number;
 }
 
 export interface GatherAction {
