@@ -2,9 +2,9 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import * as storageClient from './storageClient';
 
 export type Winner = {
-  name: string;
-  score: number;
-  place: number;
+  name: string | undefined;
+  score: number ;
+  place?: number ;
 };
 
 export type WinnerListState = {
@@ -15,8 +15,8 @@ const initialState: WinnerListState = {
   winners: [],
 };
 
-export const setWinners = createAsyncThunk<{winners: Winner[]}>(
-  'SetWinners',
+export const fetchWinners = createAsyncThunk<{winners: Winner[]}>(
+  'fetchWinners',
   async () => {
     const response = await storageClient.fetchWinners();
     if (response.kind === 'success') {
@@ -34,7 +34,7 @@ const winnerListSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(setWinners.fulfilled, (state, action) => {
+    builder.addCase(fetchWinners.fulfilled, (state, action) => {
       state.winners = action.payload.winners;
     });
   },

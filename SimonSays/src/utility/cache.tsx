@@ -13,12 +13,12 @@ const multiGetData = async () => {
 
 const multiSetData = async (keyValueArray: [string, string][]) => {
   try {
-    /*
-      keyValueAray: [
-       ["@MyApp_user", "value_1"],
-       ["@MyApp_user", "value_1"]
-     ]
-    */
+    
+    //   keyValueAray: [
+    //    ["@MyApp_user", "value_1"],
+    //    ["@MyApp_user", "value_1"]
+    //  ]
+    
     const valuesArray = await AsyncStorage.multiSet(keyValueArray);
     return valuesArray;
   } catch (error) {

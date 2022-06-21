@@ -2,6 +2,9 @@ import React, {useState, useEffect} from 'react';
 import RNRestart from 'react-native-restart';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
+import {useDispatch} from 'react-redux';
+import {fetchWinners} from '../redux/winnerListSlice';
+import AsyncStore from '../utility/cache';
 
 import {
   StyleSheet,
@@ -14,16 +17,39 @@ import {
 import {Props} from '../navigation';
 import {Winner} from '../redux/winnerListSlice';
 
-const Score = ({navigation}: Props) => {
+const Score = ({route}: Props) => {
+  const dispatch = useDispatch();
   const Data = useSelector((state: RootState) => state.winnerList);
-  console.log('state: ', Data);
 
-  const [modalControl, setModalControl] = useState<boolean>(true);
   const [newName, setNewName] = useState<string>();
   const [winnersList, setWinnersList] = useState<Winner[]>([]);
+  const [modalControl, setModalControl] = useState<boolean>(true);
+
+  const checkList = () => {
+    let newWinner: Winner = {name: newName, score: route.params.score};
+    let newArray = {...Data};
+
+    
+
+    newArray.winners.push(newWinner);
+    newArray.winners = newArray.winners
+      .sort((a, b) => {
+        return b.score - a.score;
+      })
+      .slice(0, 10);
+    let counter = 1;
+    newArray.winners.forEach(winner => {
+      winner.place = counter;
+      return;
+    });
+    console.log('first test: ', newArray);
+    // AsyncStore.multiSetData(JSON.stringify(newArray))
+  };
 
   useEffect(() => {
     setWinnersList(Data.winners);
+
+    dispatch(fetchWinners());
   }, []);
 
   let winnerList = winnersList.map(winner => {
@@ -59,8 +85,8 @@ const Score = ({navigation}: Props) => {
             }}></TextInput>
           <TouchableOpacity
             onPress={() => {
-              console.log(newName);
               setModalControl(false);
+              checkList();
             }}>
             <Text style={styles.button}>Save</Text>
           </TouchableOpacity>

@@ -3,7 +3,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 type RootStackParamList = {
   Game: undefined;
-  Score: undefined;
+  Score: { score: number };
 };
 
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Score'>;

@@ -2,33 +2,34 @@ import React, {useState, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-import {setWinners} from '../redux/winnerListSlice';
+import {fetchWinners} from '../redux/winnerListSlice';
 
 import Sound from 'react-native-sound';
 
 import {Props} from '../navigation';
 import getSounds from '../utility/getSounds';
-import AsyncStore from '../utility/cache';
 
 const Game = ({navigation}: Props) => {
-  const [isUserTurn, setUserTurn] = useState<boolean>(false);
   const [soundList, SetSoundList] = useState<Sound[]>([]);
   const [turnTrack, setTurntrack] = useState<number[]>([]);
   const [turnCounter, setTurnCounter] = useState<number>(0);
   const [stepCounter, setStepCounter] = useState<number>(0);
+  const [isUserTurn, setUserTurn] = useState<boolean>(false);
 
   const [isRedPressed, setRedPressed] = useState<string>('red');
-  const [isYellowPressed, setYellowPressed] = useState<string>('yellow');
   const [isBluePressed, setBluePressed] = useState<string>('blue');
   const [isGreenPressed, setGreenPressed] = useState<string>('green');
+  const [isYellowPressed, setYellowPressed] = useState<string>('yellow');
 
   const dispatch = useDispatch();
 
+
+
   useFocusEffect(
     useCallback(() => {
-      dispatch(setWinners());
       SetSoundList(getSounds());
       addStep();
+      dispatch(fetchWinners());
       return () => {};
     }, []),
   );
@@ -98,7 +99,7 @@ const Game = ({navigation}: Props) => {
     } else if (e === 3 && turnTrack[stepCounter] === 3) {
       soundList[3].setCurrentTime(0).play();
     } else {
-      navigation.navigate('Score');
+      navigation.navigate('Score', {score: turnCounter});
       return;
     }
     if (stepCounter === turnTrack.length - 1) {
