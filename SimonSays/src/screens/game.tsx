@@ -1,11 +1,14 @@
 import React, {useState, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {setWinners} from '../redux/winnerListSlice';
 
 import Sound from 'react-native-sound';
 
 import {Props} from '../navigation';
 import getSounds from '../utility/getSounds';
+import AsyncStore from '../utility/cache';
 
 const Game = ({navigation}: Props) => {
   const [isUserTurn, setUserTurn] = useState<boolean>(false);
@@ -19,18 +22,16 @@ const Game = ({navigation}: Props) => {
   const [isBluePressed, setBluePressed] = useState<string>('blue');
   const [isGreenPressed, setGreenPressed] = useState<string>('green');
 
+  const dispatch = useDispatch();
+
   useFocusEffect(
     useCallback(() => {
+      dispatch(setWinners());
       SetSoundList(getSounds());
       addStep();
       return () => {};
     }, []),
   );
-  const resetArray = () => {
-    while (turnTrack.length > 0) {
-      turnTrack.pop;
-    }
-  };
 
   const runSteps = () => {
     if (!soundList.length) return;

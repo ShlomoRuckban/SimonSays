@@ -10,7 +10,7 @@ type NetworkResponse<T> = {
 
 export const fetchWinners = async (): Promise<NetworkResponse<Winner[]>> => {
   const response = await AsyncStore.multiGetData();
-  if (response) {
+  if (response !== undefined) {
     return {
       kind: 'success',
       body: response,

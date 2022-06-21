@@ -1,30 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const multiGetData = async (storageKeys: string[]) => {
-//   try {
-
-//     const valuesArray = await AsyncStorage.multiGet(storageKeys)
-//     return valuesArray;
-
-//   } catch (error) {
-//     // multi getting error
-//     console.log("Error :",error)
-//   }
-// }
-
 const multiGetData = async () => {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    const result = await AsyncStorage.multiGet(keys);
-
-    const test = result.map((req: any) => JSON.parse(req)).forEach(console.log);
-    if(test === undefined) {return null;}
-
-    return result.map((req: any) => JSON.parse(req)).forEach(console.log);
+    const valuesArray = await AsyncStorage.multiGet(keys);
+    return valuesArray.map((req: any) => JSON.parse(req)).forEach(console.log);
   } catch (error) {
-    console.error(error);
+    // multi getting error
+    console.log('Error :', error);
   }
 };
+
 const multiSetData = async (keyValueArray: [string, string][]) => {
   try {
     /*
