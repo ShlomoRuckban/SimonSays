@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import {CommonActions} from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
 import RNRestart from 'react-native-restart';
+import {useSelector} from 'react-redux';
+import {RootState} from '../redux/store';
 
 import {
   StyleSheet,
@@ -11,25 +12,21 @@ import {
   TextInput,
 } from 'react-native';
 import {Props} from '../navigation';
-
-const list = [
-  {name: 'Shlomo', score: 10, place: 1},
-  {name: 'Shlomo', score: 9, place: 2},
-  {name: 'Shlomo', score: 8, place: 3},
-  {name: 'Shlomo', score: 7, place: 4},
-  {name: 'Shlomo', score: 6, place: 5},
-  {name: 'Shlomo', score: 5, place: 6},
-  {name: 'Shlomo', score: 4, place: 7},
-  {name: 'Shlomo', score: 3, place: 8},
-  {name: 'Shlomo', score: 2, place: 9},
-  {name: 'Shlomo', score: 1, place: 10},
-];
+import {Winner} from '../redux/winnerListSlice';
 
 const Score = ({navigation}: Props) => {
+  const Data = useSelector((state: RootState) => state.winnerList);
+  console.log('state: ', Data);
+
   const [modalControl, setModalControl] = useState<boolean>(true);
   const [newName, setNewName] = useState<string>();
+  const [winnersList, setWinnersList] = useState<Winner[]>([]);
 
-  let winnerList = list.map(winner => {
+  useEffect(() => {
+    setWinnersList(Data.winners);
+  }, []);
+
+  let winnerList = winnersList.map(winner => {
     return (
       <View key={winner.place} style={styles.winner}>
         <Text style={styles.spot}>{winner.place}</Text>

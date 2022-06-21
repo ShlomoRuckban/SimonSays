@@ -4,11 +4,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Provider, useSelector, useDispatch} from 'react-redux';
 
-import {ApplicationState} from './src/redux';
 import Score from './src/screens/score';
 import Game from './src/screens/game';
-import {store} from './src/redux';
 import AsyncStore from './src/utility/cache';
+import store from "./src/redux/store"
 
 const Stack = createStackNavigator();
 
@@ -19,8 +18,6 @@ const Stack = createStackNavigator();
 // );
 
 function App() {
-
-
 
   useEffect(() => {
     const allData:any = AsyncStore.multiGetData();

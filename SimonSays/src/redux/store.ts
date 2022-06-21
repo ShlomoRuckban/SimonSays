@@ -1,6 +1,14 @@
-import {configureStore} from '@reduxjs/toolkit';
-import {rootReducer} from './reducers';
+import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import winnerListSlice from './winnerListSlice';
 
-const store = configureStore({reducer: rootReducer});
+const rootReducer = combineReducers({
+    winnerList: winnerListSlice
+});
 
-export {store};
+export type RootState = ReturnType<typeof rootReducer>;
+
+const store = configureStore({
+  reducer: rootReducer,
+});
+
+export default store;

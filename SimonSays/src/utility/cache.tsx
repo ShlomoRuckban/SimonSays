@@ -17,6 +17,9 @@ const multiGetData = async () => {
     const keys = await AsyncStorage.getAllKeys();
     const result = await AsyncStorage.multiGet(keys);
 
+    const test = result.map((req: any) => JSON.parse(req)).forEach(console.log);
+    if(test === undefined) {return null;}
+
     return result.map((req: any) => JSON.parse(req)).forEach(console.log);
   } catch (error) {
     console.error(error);

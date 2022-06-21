@@ -35,9 +35,7 @@ const Game = ({navigation}: Props) => {
   const runSteps = () => {
     if (!soundList.length) return;
     var passedTurns = 0;
-    console.log(turnTrack);
     turnTrack.forEach(turn => {
-      console.log('test123');
       if (turn === 0) {
         setTimeout(() => {
           setRedPressed('pink');
@@ -103,7 +101,6 @@ const Game = ({navigation}: Props) => {
       return;
     }
     if (stepCounter === turnTrack.length - 1) {
-      console.log('test1: ', turnTrack);
       setStepCounter(0);
       setTurnCounter(turnCounter + 1);
       setUserTurn(false);
