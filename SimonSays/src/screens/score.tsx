@@ -19,7 +19,7 @@ import {Winner} from '../redux/winnerListSlice';
 
 const Score = ({route}: Props) => {
   const dispatch = useDispatch();
-  const Data = useSelector((state: RootState) => state.winnerList);
+  const data = useSelector((state: RootState) => state.winnerList);
 
   const [newName, setNewName] = useState<string>();
   const [winnersList, setWinnersList] = useState<Winner[]>([]);
@@ -27,27 +27,26 @@ const Score = ({route}: Props) => {
 
   const checkList = () => {
     let newWinner: Winner = {name: newName, score: route.params.score};
-    let newArray = {...Data};
+    let newArray = {...data.winners}; // gives .push isnt a function
+    let dataArray = data.winners; // leaves as readonly like in the start
 
-    
-
-    newArray.winners.push(newWinner);
-    newArray.winners = newArray.winners
-      .sort((a, b) => {
-        return b.score - a.score;
-      })
-      .slice(0, 10);
-    let counter = 1;
-    newArray.winners.forEach(winner => {
-      winner.place = counter;
-      return;
-    });
-    console.log('first test: ', newArray);
+    newArray.push(newWinner);
+    // newArray = newArray
+    //   .sort((a, b) => {
+    //     return b.score - a.score;
+    //   })
+    //   .slice(0, 10);
+    // let counter = 1;
+    // newArray.forEach(winner => {
+    //   winner.place = counter;
+    //   return;
+    // });
+    // console.log('first test: ', newArray);
     // AsyncStore.multiSetData(JSON.stringify(newArray))
   };
 
   useEffect(() => {
-    setWinnersList(Data.winners);
+    setWinnersList(data.winners);
 
     dispatch(fetchWinners());
   }, []);
