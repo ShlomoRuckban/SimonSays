@@ -3,8 +3,8 @@ import * as storageClient from './storageClient';
 
 export type Winner = {
   name: string | undefined;
-  score: number ;
-  place?: number ;
+  score: number;
+  place?: number;
 };
 
 export type WinnerListState = {

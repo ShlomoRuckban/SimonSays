@@ -27,27 +27,29 @@ const Score = ({route}: Props) => {
 
   const checkList = () => {
     let newWinner: Winner = {name: newName, score: route.params.score};
-    let newArray = {...data.winners}; // gives .push isnt a function
-    let dataArray = data.winners; // leaves as readonly like in the start
+    let newArray = [...data.winners];
+    let arrayToSend: [string, string][] = [];
 
     newArray.push(newWinner);
-    // newArray = newArray
-    //   .sort((a, b) => {
-    //     return b.score - a.score;
-    //   })
-    //   .slice(0, 10);
-    // let counter = 1;
-    // newArray.forEach(winner => {
-    //   winner.place = counter;
-    //   return;
-    // });
-    // console.log('first test: ', newArray);
-    // AsyncStore.multiSetData(JSON.stringify(newArray))
+    newArray = newArray
+      .sort((a, b) => {
+        return b.score - a.score;
+      })
+      .slice(0, 10);
+
+    for (var i = 0; i < newArray.length; i++) {
+      newArray[i] = {
+        name: newArray[i].name,
+        score: newArray[i].score,
+        place: i + 1,
+      };
+      arrayToSend.push([`place ${i + 1}`, JSON.stringify(newArray[i])]);
+    }
+    AsyncStore.multiSetData(arrayToSend);
+    setWinnersList(newArray);
   };
 
   useEffect(() => {
-    setWinnersList(data.winners);
-
     dispatch(fetchWinners());
   }, []);
 

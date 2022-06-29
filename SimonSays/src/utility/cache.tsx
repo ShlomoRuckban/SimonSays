@@ -1,10 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Winner} from '../redux/winnerListSlice';
 
 const multiGetData = async () => {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    const valuesArray = await AsyncStorage.multiGet(keys);
-    return valuesArray.map((req: any) => JSON.parse(req)).forEach(console.log);
+    const valuesArray: any = await AsyncStorage.multiGet(keys);
+    let dataArray: Winner[] = [];
+
+    for (let i = 0; i < valuesArray.length; i++) {
+      dataArray[i] = JSON.parse(valuesArray[i][1]);
+    }
+
+    return dataArray;
   } catch (error) {
     // multi getting error
     console.log('Error :', error);
@@ -13,12 +20,11 @@ const multiGetData = async () => {
 
 const multiSetData = async (keyValueArray: [string, string][]) => {
   try {
-    
     //   keyValueAray: [
     //    ["@MyApp_user", "value_1"],
     //    ["@MyApp_user", "value_1"]
     //  ]
-    
+
     const valuesArray = await AsyncStorage.multiSet(keyValueArray);
     return valuesArray;
   } catch (error) {
